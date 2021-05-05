@@ -5,6 +5,59 @@ let RADIUS = .3;
 
 var group = new THREE.Group(); //group of spheres
 
+
+var obj = {
+    message: 'Hello World',
+    displayOutline: false,
+
+    Radius: .3,
+    speed: 5,
+
+    height: 10,
+    noiseStrength: 10.2,
+    growthSpeed: 0.2,
+
+    type: 'three',
+
+    explode: function () {
+      alert('Bang!');
+    },
+
+    color0: "#ffae23", // CSS string
+    color1: [ 0, 128, 255 ], // RGB array
+    color2: [ 0, 128, 255, 0.3 ], // RGB with alpha
+    color3: { h: 350, s: 0.9, v: 0.3 } // Hue, saturation, value
+};
+
+var gui = new dat.gui.GUI();
+
+gui.remember(obj);
+
+gui.add(obj, 'message');
+gui.add(obj, 'displayOutline');
+gui.add(obj, 'explode');
+
+gui.add(obj, 'Radius').min(0).max(1).step(0.05);
+gui.add(obj, 'height').step(5); // Increment amount
+
+// Choose from accepted values
+gui.add(obj, 'type', [ 'one', 'two', 'three' ] );
+
+// Choose from named values
+gui.add(obj, 'speed', { Stopped: 0, Slow: 0.1, Fast: 5 } );
+
+var f1 = gui.addFolder('Colors');
+f1.addColor(obj, 'color0');
+f1.addColor(obj, 'color1');
+f1.addColor(obj, 'color2');
+f1.addColor(obj, 'color3');
+
+var f2 = gui.addFolder('Another Folder');
+f2.add(obj, 'noiseStrength');
+
+var f3 = f2.addFolder('Nested Folder');
+f3.add(obj, 'growthSpeed');
+
 init();
 animate();
 
@@ -16,14 +69,6 @@ function init()
     var height = window.innerHeight;
     renderer.setSize (width, height);
     document.body.appendChild (renderer.domElement);
-
-    /*// Label Renderer setup
-	labelRenderer = new CSS2DRenderer();
-	labelRenderer.setSize( window.innerWidth, window.innerHeight );
-	labelRenderer.domElement.style.position = 'absolute';
-	labelRenderer.domElement.style.top = '0px';
-	document.body.appendChild( labelRenderer.domElement );
-	*/
 	
     // Creating a scene
     scene = new THREE.Scene();
@@ -117,12 +162,6 @@ function init()
     // Adding our Trackball Controller
     controls = new THREE.TrackballControls (camera, renderer.domElement);
 
-    // GUI
-    const gui = new GUI();
-	gui.add( params, 'enableWind' ).name( 'Enable wind' );
-	gui.add( params, 'showBall' ).name( 'Show ball' );
-	gui.add( params, 'togglePins' ).name( 'Toggle pins' );
-	//
 }
 
 function animate()
@@ -134,7 +173,7 @@ function animate()
 
 function draw_sphere(x, y, b) {
 	
-	const geometry = new THREE.SphereGeometry(RADIUS, 16, 16);
+	const geometry = new THREE.SphereGeometry(obj.Radius, 16, 16);
 	const material = new THREE.MeshNormalMaterial( { transparent: true, opacity: .97 } );
 	const sphere = new THREE.Mesh( geometry, material );
 	
